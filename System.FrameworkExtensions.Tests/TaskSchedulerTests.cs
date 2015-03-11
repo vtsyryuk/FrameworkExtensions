@@ -7,203 +7,208 @@ using NUnit.Framework;
 
 namespace System.FrameworkExtensions.Tests
 {
-	[TestFixture]
-	public sealed class TaskSchedulerTests
-	{
-		public class N1Test
-		{
-			private volatile int _done = 0;
-			public void CreateN1Thread(TaskScheduler taskScheduler, int threadcount, string message)
-			{
-				_done = 0;
-				const int totalworkdone = 256 * 10;
-				var are = new AutoResetEvent(false);
+    [TestFixture]
+    public sealed class TaskSchedulerTests
+    {
+        public class N1Test
+        {
+            private volatile int _done = 0;
 
-				var threads = new Thread[threadcount];
-				for (int i = 0; i < threadcount; ++i)
-					threads[i] = new Thread(o =>
-					                        {
-						var ts = (TaskScheduler)o;
-						for (int j = 0; j < totalworkdone / threadcount; j++)
-						{
-							Task.Factory.StartNew(() =>
-							                      {
-								for (int k = 0; k < 100000; ++k)
-									DoSomethingStupid();
-								var r = new Random().Next() % 3;
-								if (r != 0)
-									Thread.Sleep(r - 1);
+            public void CreateN1Thread(TaskScheduler taskScheduler, int threadcount, string message)
+            {
+                _done = 0;
+                const int totalworkdone = 256*10;
+                var are = new AutoResetEvent(false);
 
-								++_done;
-								if (_done == totalworkdone)
-									are.Set();
-							}, CancellationToken.None, TaskCreationOptions.None, ts)
-								.ContinueWith(x => { }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, ts);
-						}
-					});
+                var threads = new Thread[threadcount];
+                for (int i = 0; i < threadcount; ++i)
+                    threads[i] = new Thread(o =>
+                    {
+                        var ts = (TaskScheduler) o;
+                        for (int j = 0; j < totalworkdone/threadcount; j++)
+                        {
+                            Task.Factory.StartNew(() =>
+                            {
+                                for (int k = 0; k < 100000; ++k)
+                                    DoSomethingStupid();
+                                var r = new Random().Next()%3;
+                                if (r != 0)
+                                    Thread.Sleep(r - 1);
 
-				Stopwatch sw = Stopwatch.StartNew();
-				for (int i = 0; i < threadcount; ++i)
-					threads[i].Start(taskScheduler);
+                                ++_done;
+                                if (_done == totalworkdone)
+                                    are.Set();
+                            }, CancellationToken.None, TaskCreationOptions.None, ts)
+                                .ContinueWith(x => { }, CancellationToken.None,
+                                    TaskContinuationOptions.ExecuteSynchronously, ts);
+                        }
+                    });
 
-				are.WaitOne();
-				sw.Stop();
-				Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
-				                  message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
-			}
-		}
+                var sw = Stopwatch.StartNew();
+                for (int i = 0; i < threadcount; ++i)
+                    threads[i].Start(taskScheduler);
 
-		public class AsyncQueueTest
-		{
-			private volatile int _done = 0;
-			public void CreateThread(AsyncQueue asyncQueue, int threadcount, string message)
-			{
-				_done = 0;
-				const int totalworkdone = 256 * 10;
-				var are = new AutoResetEvent(false);
+                are.WaitOne();
+                sw.Stop();
+                Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
+                    message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
+            }
+        }
 
-				var threads = new Thread[threadcount];
-				for (int i = 0; i < threadcount; ++i)
-					threads[i] = new Thread(o =>
-					                        {
-						var aq = (AsyncQueue)o;
-						for (int j = 0; j < totalworkdone / threadcount; j++)
-						{
-							aq.Enqueue(() =>
-							           {
-								for (int k = 0; k < 100000; ++k)
-									DoSomethingStupid();
-								var r = new Random().Next() % 3;
-								if (r != 0)
-									Thread.Sleep(r - 1);
+        public class AsyncQueueTest
+        {
+            private volatile int _done = 0;
 
-								++_done;
-								if (_done == totalworkdone)
-									are.Set();
-							});
-						}
-					});
+            public void CreateThread(AsyncQueue asyncQueue, int threadcount, string message)
+            {
+                _done = 0;
+                const int totalworkdone = 256*10;
+                var are = new AutoResetEvent(false);
 
-				Stopwatch sw = Stopwatch.StartNew();
-				for (int i = 0; i < threadcount; ++i)
-					threads[i].Start(asyncQueue);
+                var threads = new Thread[threadcount];
+                for (int i = 0; i < threadcount; ++i)
+                    threads[i] = new Thread(o =>
+                    {
+                        var aq = (AsyncQueue) o;
+                        for (int j = 0; j < totalworkdone/threadcount; j++)
+                        {
+                            aq.Enqueue(() =>
+                            {
+                                for (int k = 0; k < 100000; ++k)
+                                    DoSomethingStupid();
+                                var r = new Random().Next()%3;
+                                if (r != 0)
+                                    Thread.Sleep(r - 1);
 
-				are.WaitOne();
-				sw.Stop();
-				Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
-				                  message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
-			}
-		}
+                                ++_done;
+                                if (_done == totalworkdone)
+                                    are.Set();
+                            });
+                        }
+                    });
 
-		private delegate void CreateThreadFunc(TaskScheduler taskScheduler, int threadcount, string message);
+                Stopwatch sw = Stopwatch.StartNew();
+                for (int i = 0; i < threadcount; ++i)
+                    threads[i].Start(asyncQueue);
 
-		static void CreateNmThread(TaskScheduler taskScheduler, int threadcount, string message)
-		{
-			int done = 0;
-			const int totalworkdone = 256 * 10;
-			var are = new AutoResetEvent(false);
+                are.WaitOne();
+                sw.Stop();
+                Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
+                    message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
+            }
+        }
 
-			var threads = new Thread[threadcount];
-			for (int i = 0; i < threadcount; ++i)
-				threads[i] = new Thread(o =>
-				                        {
-					var ts = (TaskScheduler)o;
-					for (int j = 0; j < totalworkdone / threadcount; j++)
-					{
-						Task.Factory.StartNew(() =>
-						                      {
-							for (int k = 0; k < 100000; ++k)
-								DoSomethingStupid();
-							var r = new Random().Next() % 3;
-							if (r != 0)
-								Thread.Sleep(r - 1);
+        private delegate void CreateThreadFunc(TaskScheduler taskScheduler, int threadcount, string message);
 
-							Interlocked.Increment(ref done);
-							if (done == totalworkdone)
-								are.Set();
-						}, CancellationToken.None, TaskCreationOptions.None, ts)
-							.ContinueWith(x => { }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, ts);
-					}
-				});
+        private static void CreateNmThread(TaskScheduler taskScheduler, int threadcount, string message)
+        {
+            int done = 0;
+            const int totalworkdone = 256*10;
+            var are = new AutoResetEvent(false);
 
-			Stopwatch sw = Stopwatch.StartNew();
-			for (int i = 0; i < threadcount; ++i)
-				threads[i].Start(taskScheduler);
+            var threads = new Thread[threadcount];
+            for (int i = 0; i < threadcount; ++i)
+                threads[i] = new Thread(o =>
+                {
+                    var ts = (TaskScheduler) o;
+                    for (int j = 0; j < totalworkdone/threadcount; j++)
+                    {
+                        Task.Factory.StartNew(() =>
+                        {
+                            for (int k = 0; k < 100000; ++k)
+                                DoSomethingStupid();
+                            var r = new Random().Next()%3;
+                            if (r != 0)
+                                Thread.Sleep(r - 1);
 
-			are.WaitOne();
-			sw.Stop();
-			Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
-			                  message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
-		}
+                            Interlocked.Increment(ref done);
+                            if (done == totalworkdone)
+                                are.Set();
+                        }, CancellationToken.None, TaskCreationOptions.None, ts)
+                            .ContinueWith(x => { }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously,
+                                ts);
+                    }
+                });
 
-		[MethodImpl(MethodImplOptions.NoInlining)]
-		static void DoSomethingStupid()
-		{
-			var i = 0;
-			++i;
-			if (i == 1)
-				return;
-			return;
-		}
+            Stopwatch sw = Stopwatch.StartNew();
+            for (int i = 0; i < threadcount; ++i)
+                threads[i].Start(taskScheduler);
 
-		private static void CreateTest(TaskScheduler taskScheduler, CreateThreadFunc func)
-		{
-			string name = taskScheduler.GetType().Name;
+            are.WaitOne();
+            sw.Stop();
+            Console.WriteLine("Time taken to complete {0}-{1}: {2}ms {3}ticks",
+                message, threadcount, sw.ElapsedMilliseconds, sw.ElapsedTicks);
+        }
 
-			Console.WriteLine("********************{0}********************", name);
-			func(taskScheduler, 2, name);
-			func(taskScheduler, 4, name);
-			func(taskScheduler, 8, name);
-			func(taskScheduler, 16, name);
-			func(taskScheduler, 32, name);
-			func(taskScheduler, 64, name);
-			func(taskScheduler, 128, name);
-			func(taskScheduler, 256, name);
-			Console.WriteLine("*****************************************************************************");
-			Console.WriteLine();
-			GC.Collect();
-		}
-		private static void CreateTest()
-		{
-			var aqtest = new AsyncQueueTest();
-			var async = new AsyncQueue();
-			string name = typeof(AsyncQueue).Name;
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void DoSomethingStupid()
+        {
+            var i = 0;
+            ++i;
+            if (i == 1)
+                return;
+            return;
+        }
 
-			Console.WriteLine("********************{0}********************", name);
-			aqtest.CreateThread(async, 2, name);
-			aqtest.CreateThread(async, 4, name);
-			aqtest.CreateThread(async, 8, name);
-			aqtest.CreateThread(async, 16, name);
-			aqtest.CreateThread(async, 32, name);
-			aqtest.CreateThread(async, 64, name);
-			aqtest.CreateThread(async, 128, name);
-			aqtest.CreateThread(async, 256, name);
-			Console.WriteLine("*****************************************************************************");
-			Console.WriteLine();
-			GC.Collect();
-		}
+        private static void CreateTest(TaskScheduler taskScheduler, CreateThreadFunc func)
+        {
+            string name = taskScheduler.GetType().Name;
 
-		[Test]
-		public void N1TaskScheduler()
-		{
-			var o = new N1TaskScheduler();
-			var test = new N1Test();
-			CreateTest(o, test.CreateN1Thread);
-			GC.KeepAlive(o);
-		}
+            Console.WriteLine("********************{0}********************", name);
+            func(taskScheduler, 2, name);
+            func(taskScheduler, 4, name);
+            func(taskScheduler, 8, name);
+            func(taskScheduler, 16, name);
+            func(taskScheduler, 32, name);
+            func(taskScheduler, 64, name);
+            func(taskScheduler, 128, name);
+            func(taskScheduler, 256, name);
+            Console.WriteLine("*****************************************************************************");
+            Console.WriteLine();
+            GC.Collect();
+        }
 
-		[Test]
-		public void NmTaskScheduler()
-		{
-			var o = new NmTaskScheduler(8);
-			CreateTest(o, CreateNmThread);
-			GC.KeepAlive(o);
-		}
+        private static void CreateTest()
+        {
+            var aqtest = new AsyncQueueTest();
+            var async = new AsyncQueue();
+            string name = typeof (AsyncQueue).Name;
 
-		[Test]
-		public void AsyncQueue()
-		{
-			CreateTest();
-		}
-	}
+            Console.WriteLine("********************{0}********************", name);
+            aqtest.CreateThread(async, 2, name);
+            aqtest.CreateThread(async, 4, name);
+            aqtest.CreateThread(async, 8, name);
+            aqtest.CreateThread(async, 16, name);
+            aqtest.CreateThread(async, 32, name);
+            aqtest.CreateThread(async, 64, name);
+            aqtest.CreateThread(async, 128, name);
+            aqtest.CreateThread(async, 256, name);
+            Console.WriteLine("*****************************************************************************");
+            Console.WriteLine();
+            GC.Collect();
+        }
+
+        [Test]
+        public void N1TaskScheduler()
+        {
+            var o = new N1TaskScheduler();
+            var test = new N1Test();
+            CreateTest(o, test.CreateN1Thread);
+            GC.KeepAlive(o);
+        }
+
+        [Test]
+        public void NmTaskScheduler()
+        {
+            var o = new NmTaskScheduler(8);
+            CreateTest(o, CreateNmThread);
+            GC.KeepAlive(o);
+        }
+
+        [Test]
+        public void AsyncQueue()
+        {
+            CreateTest();
+        }
+    }
 }
