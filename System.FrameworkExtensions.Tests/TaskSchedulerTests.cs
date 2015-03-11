@@ -17,7 +17,7 @@ namespace System.FrameworkExtensions.Tests
             public void CreateN1Thread(TaskScheduler taskScheduler, int threadcount, string message)
             {
                 _done = 0;
-                const int totalworkdone = 256*2;
+                const int totalworkdone = 256*10;
                 var are = new AutoResetEvent(false);
 
                 var threads = new Thread[threadcount];
@@ -29,7 +29,7 @@ namespace System.FrameworkExtensions.Tests
                         {
                             Task.Factory.StartNew(() =>
                             {
-                                for (int k = 0; k < 10000; ++k)
+                                for (int k = 0; k < 1000; ++k)
                                     DoSomethingStupid();
                                 var r = new Random().Next()%3;
                                 if (r != 0)
@@ -62,7 +62,7 @@ namespace System.FrameworkExtensions.Tests
             public void CreateThread(AsyncQueue asyncQueue, int threadcount, string message)
             {
                 _done = 0;
-                const int totalworkdone = 256*2;
+                const int totalworkdone = 256*10;
                 var are = new AutoResetEvent(false);
 
                 var threads = new Thread[threadcount];
@@ -74,7 +74,7 @@ namespace System.FrameworkExtensions.Tests
                         {
                             aq.Enqueue(() =>
                             {
-                                for (int k = 0; k < 10000; ++k)
+                                for (int k = 0; k < 1000; ++k)
                                     DoSomethingStupid();
                                 var r = new Random().Next()%3;
                                 if (r != 0)
@@ -103,7 +103,7 @@ namespace System.FrameworkExtensions.Tests
         private static void CreateNmThread(TaskScheduler taskScheduler, int threadcount, string message)
         {
             int done = 0;
-            const int totalworkdone = 256*2;
+            const int totalworkdone = 256*10;
             var are = new AutoResetEvent(false);
 
             var threads = new Thread[threadcount];
@@ -115,7 +115,7 @@ namespace System.FrameworkExtensions.Tests
                     {
                         Task.Factory.StartNew(() =>
                         {
-                            for (int k = 0; k < 10000; ++k)
+                            for (int k = 0; k < 1000; ++k)
                                 DoSomethingStupid();
                             var r = new Random().Next()%3;
                             if (r != 0)
@@ -188,7 +188,7 @@ namespace System.FrameworkExtensions.Tests
             GC.Collect();
         }
 
-        [Test]
+        [Test, Ignore]
         public void N1TaskScheduler()
         {
             var o = new N1TaskScheduler();
@@ -197,7 +197,7 @@ namespace System.FrameworkExtensions.Tests
             GC.KeepAlive(o);
         }
 
-        [Test]
+        [Test, Ignore]
         public void NmTaskScheduler()
         {
             var o = new NmTaskScheduler(8);
