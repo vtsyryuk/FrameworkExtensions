@@ -5,5 +5,5 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release System.FrameworkExtensions.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./System.FrameworkExtensions.Tests/bin/Debug/System.FrameworkExtensions.Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./System.FrameworkExtensions.Tests/bin/Release/System.FrameworkExtensions.Tests.dll
   
