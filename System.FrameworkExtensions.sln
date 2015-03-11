@@ -1,9 +1,16 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.FrameworkExtensions", "System.FrameworkExtensions.csproj", "{7F7D58F6-9DB1-4A57-A791-3C5E0CD62F5B}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.FrameworkExtensions", "System.FrameworkExtensions\System.FrameworkExtensions.csproj", "{7F7D58F6-9DB1-4A57-A791-3C5E0CD62F5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.FrameworkExtensions.Tests", "System.FrameworkExtensions.Tests\System.FrameworkExtensions.Tests.csproj", "{F61E2B81-24D6-4725-8747-6FE964023268}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{824ABE56-AB4B-4714-97D4-4E327DA94EE6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,6 +26,9 @@ Global
 		{F61E2B81-24D6-4725-8747-6FE964023268}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F61E2B81-24D6-4725-8747-6FE964023268}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F61E2B81-24D6-4725-8747-6FE964023268}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
