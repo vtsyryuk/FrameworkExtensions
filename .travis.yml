@@ -1,10 +1,9 @@
 language: csharp
-solution: ./System.FrameworkExtensions.sln
-
+solution: System.FrameworkExtensions.sln
 install:
-  - sudo apt-get install nunit-console
-  - nuget restore ./System.FrameworkExtensions.sln
-
+  - nuget restore System.FrameworkExtensions.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - xbuild ./System.FrameworkExtensions.sln
-  - nunit-console ./System.FrameworkExtensions.Tests/bin/Debug/System.FrameworkExtensions.Tests.dll
+  - xbuild /p:Configuration=Release System.FrameworkExtensions.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./System.FrameworkExtensions.Tests/bin/Debug/System.FrameworkExtensions.Tests.dll
+  
