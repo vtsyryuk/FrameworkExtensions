@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>$title$</title>
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<description>$description$</description>
+	</metadata>
+	<files>
+		<file src="bin\$configuration$\$id$.dll" target="lib\net40\$id$.dll" />
+		<file src="bin\$configuration$\$id$.pdb" target="lib\net40\$id$.pdb" />
+	</files>
+</package>
