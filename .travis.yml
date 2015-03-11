@@ -1,0 +1,10 @@
+language: csharp
+solution: ./System.FrameworkExtensions.sln
+
+install:
+  - sudo apt-get install nunit-console
+  - nuget restore ./System.FrameworkExtensions.sln
+
+script:
+  - xbuild ./System.FrameworkExtensions.sln
+  - nunit-console ./System.FrameworkExtensions.Tests/bin/Debug/System.FrameworkExtensions.Tests.dll
