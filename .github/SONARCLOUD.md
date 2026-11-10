@@ -19,3 +19,5 @@ Scanner inputs: `build/coverage.xml`, `build/test-results.xml`. The workflow upl
 CI builds the legacy .NET projects against the hosted Windows .NET Framework 4.8 reference pack, runs the existing NUnit 2 suite under CLR 4, and imports OpenCover XML. The project files and published target are unchanged.
 
 After activation, make `SonarCloud analysis and quality gate` a required check in GitHub branch protection if desired. Do not require that job for untrusted PRs whose analysis is intentionally skipped.
+
+All workflow actions are pinned to immutable commits. Permissions are declared per job, and the build/test job receives no SonarCloud token.
